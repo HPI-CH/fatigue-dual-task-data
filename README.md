@@ -42,7 +42,7 @@ The raw data of a specific run (for example sub_03 dual task) is transformed to 
 
 ### **Calculate gait parameters using the interim data**
 *This step is not necessary if you have already downloaded the processed data.*\
-This part is based on the TRIPOD pipeline described in [this publication](https://doi.org/10.3390/data6090095), the scripts can be found [here](https://github.com/HPI-CH/TRIPOD).
+This part is based on the TRIPOD pipeline described in [this publication](https://doi.org/10.3390/data6090095), the scripts can be found [here](https://github.com/HPI-CH/TRIPOD). If you are using the scripts in this repository for gait parameter calculation, please cite [this publication](https://doi.org/10.3390/data6090095).
 1. Make sure the paths.json file has the correct paths to your data.
 2. Run ```python ./src/main_gait_parameters.py```
 
