@@ -16,25 +16,25 @@ if __name__ == "__main__":  # noqa: C901
                 "transcript_control.csv", 
                 "transcript_fatigue.csv"
                 ]:
-                print(f)
+                # print(f)
                 # no modifications
                 pass
 
-            elif fnmatch.fnmatch(f, "*.BIN"):
+            elif fnmatch.fnmatch(f.lower(), "*.BIN"):
                 # remove binary files
                 os.remove(file_path)
 
-            elif fnmatch.fnmatch(f, "*.WAV"):
+            elif fnmatch.fnmatch(f.lower(), "*.wav"):
                 # remove audio files
                 os.remove(file_path)
 
-            elif fnmatch.fnmatch(f, "heart_rate.CSV"):
+            elif fnmatch.fnmatch(f.lower(), "heart_rate.csv"):
                 # remove metadata
                 lines = open(file_path, "r").readlines()
                 lines[1] = "fatigue_dual_task\n"
                 open(file_path, "w").writelines(lines)
 
-            elif fnmatch.fnmatch(f, "*.csv"):
+            elif fnmatch.fnmatch(f.lower(), "*.csv"):
                 # remove date and time from IMU data
                 lines = open(file_path, "r").readlines()
                 lines[1] = "Created on: YYYY-MM-DD hh:mm:ss\n"
