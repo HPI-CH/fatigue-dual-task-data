@@ -32,8 +32,8 @@ sub_list = [
 ]
 
 raw_folders = [
-    "OG_st_BINs",
-    "OG_dt_BINs"
+    "OG_st_raw",
+    "OG_dt_raw"
 ]
 
 runs = [
