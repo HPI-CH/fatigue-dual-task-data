@@ -49,6 +49,7 @@ def append_imu_to_df(df, sub, run, imu_loc, imu):
     # get duration of recording
     duration = imu.time()[-1]  # time is zero-based already when reading the data
     # get acceleration magnitude
+    imu.acc_to_meter_per_square_sec()
     acc_mag = imu.accel_mag()
     # get gyro magnitude
     gyro_mag = imu.gyro_mag()
@@ -56,8 +57,8 @@ def append_imu_to_df(df, sub, run, imu_loc, imu):
     # append data to dataframe
     df.loc[len(df)] = [
         sub,
-        run,
         imu_loc,
+        run,
         duration,
         acc_mag.mean(),
         gyro_mag.mean(),
@@ -65,7 +66,7 @@ def append_imu_to_df(df, sub, run, imu_loc, imu):
 
 
 # load imu data from the 4 walks and the fatigue exercise
-cols = ["sub", "run", "imu_loc", "duration", "acc_mag_mean", "gyro_mag_mean"]
+cols = ["sub", "imu_loc", "run", "duration", "acc_mag_mean", "gyro_mag_mean"]
 walk_imu_df = pd.DataFrame(columns=cols)
 exercise_imu_df = pd.DataFrame(columns=cols)
 entire_session_imu_df = pd.DataFrame(columns=cols)
