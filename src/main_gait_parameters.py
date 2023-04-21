@@ -26,21 +26,21 @@ sub_list = [
     "sub_14",
     "sub_15",
     "sub_17",
-    "sub_18"
+    "sub_18",
 ]
 test = ["control", "fatigue"]  # "control", "fatigue"
 conditions = ["st", "dt"]  # "st", "dt"
 runs = [
-    f'OG_{conditions[0]}_{test[0]}',
-    f'OG_{conditions[0]}_{test[1]}',
-    f'OG_{conditions[1]}_{test[0]}',
-    f'OG_{conditions[1]}_{test[1]}',
+    f"OG_{conditions[0]}_{test[0]}",
+    f"OG_{conditions[0]}_{test[1]}",
+    f"OG_{conditions[1]}_{test[0]}",
+    f"OG_{conditions[1]}_{test[1]}",
 ]
-dataset = 'fatigue_dual_task'
-with open(os.path.join(os.path.dirname(__file__), '..', 'path.json')) as f:
+dataset = "fatigue_dual_task"
+with open(os.path.join(os.path.dirname(__file__), "..", "path.json")) as f:
     paths = json.load(f)
-interim_base_path = paths['interim_data']
-processed_base_path = paths['processed_data']
+interim_base_path = paths["interim_data"]
+processed_base_path = paths["processed_data"]
 ### PARAMS END ###
 
 ### Execute the Gait Analysis Pipeline ###
@@ -56,5 +56,14 @@ aggregate_gait_parameters.main(runs, sub_list, processed_base_path)
 base_path = paths["data"]
 window_sz = 10
 window_slide = 2
-build_features(sub_list, base_path, test, conditions, window_sz, window_slide, 
-                aggregate_windows=True, add_static_features=True, save_unwindowed_df=True)
+build_features(
+    sub_list,
+    base_path,
+    test,
+    conditions,
+    window_sz,
+    window_slide,
+    aggregate_windows=True,
+    add_static_features=True,
+    save_unwindowed_df=True,
+)

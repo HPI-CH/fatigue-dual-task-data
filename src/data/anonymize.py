@@ -11,11 +11,11 @@ if __name__ == "__main__":  # noqa: C901
             file_path = os.path.join(root, f)
             # print(file_path)
             if f in [
-                "IPAQ.csv", 
-                "subject_info.csv", 
-                "transcript_control.csv", 
-                "transcript_fatigue.csv"
-                ]:
+                "IPAQ.csv",
+                "subject_info.csv",
+                "transcript_control.csv",
+                "transcript_fatigue.csv",
+            ]:
                 # print(f)
                 # no modifications
                 pass
@@ -39,4 +39,3 @@ if __name__ == "__main__":  # noqa: C901
                 lines = open(file_path, "r").readlines()
                 lines[1] = "Created on: YYYY-MM-DD hh:mm:ss\n"
                 open(file_path, "w").writelines(lines)
-

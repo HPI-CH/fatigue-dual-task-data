@@ -2,6 +2,7 @@ import json
 import os
 import pandas as pd
 import matplotlib
+
 # matplotlib.use("WebAgg")
 import matplotlib.pyplot as plt
 from LFRF_parameters.preprocessing.plot_raw_xyz import plot_acc_gyr
@@ -9,8 +10,8 @@ from LFRF_parameters.preprocessing.get_imu_gyro_thresholds import GyroPlot
 from data.DataLoader import DataLoader
 
 #### PARAMS START ####
-load_raw = True   # load (and plot) raw IMU data into interim data
-get_stance_threshold = False   # determine stance threshold
+load_raw = True  # load (and plot) raw IMU data into interim data
+get_stance_threshold = False  # determine stance threshold
 
 sub_list = [
     "sub_01",
@@ -28,24 +29,24 @@ sub_list = [
     "sub_14",
     "sub_15",
     "sub_17",
-    "sub_18"
+    "sub_18",
 ]
 
 raw_folders = [
     "OG_st_raw",
-    "OG_dt_raw"
+    "OG_dt_raw",
 ]
 
 all_folders = [
     "OG_st_all",
-    "OG_dt_all"
+    "OG_dt_all",
 ]
 
 runs = [
     "OG_st_control",
     "OG_st_fatigue",
     "OG_dt_control",
-    "OG_dt_fatigue" 
+    "OG_dt_fatigue",
 ]
 
 with open(os.path.join(os.path.dirname(__file__), "..", "path.json")) as f:
@@ -65,7 +66,9 @@ if load_raw:
 
         from_interim = False
         read_folder_path = os.path.join(raw_base_path, read_folder, sub)
-        save_entire_recording_path = os.path.join(interim_base_path, save_entire_recording_folder, sub) # save entire recording to interim folder
+        save_entire_recording_path = os.path.join(
+            interim_base_path, save_entire_recording_folder, sub
+        )  # save entire recording to interim folder
         # save_folder_path = os.path.join(interim_base_path, save_folder, sub)
 
         # select IMU locations to load
@@ -76,7 +79,9 @@ if load_raw:
             else:  # load raw data (& save file to the interim folder)
                 data_loader = DataLoader(read_folder_path, loc)
                 df_loc = data_loader.load_GaitUp_data()
-                data_loader.save_data(save_entire_recording_path)  # save re-formatted entire data into /interim folder
+                data_loader.save_data(
+                    save_entire_recording_path
+                )  # save re-formatted entire data into /interim folder
                 # df_loc = data_loader.cut_data(322000, 372000)  # (if necessary: segment data)
                 # data_loader.save_data(save_folder_path)  # save re-formatted data into /interim folder
 
@@ -90,10 +95,15 @@ if load_raw:
 
 #### get gyro stance threshold ####
 if get_stance_threshold:
-    overwrite = False  # if False: append to existing file 
+    overwrite = False  # if False: append to existing file
 
     # if no file, create one. Otherwise append to the existing file
-    if not os.path.isfile(os.path.join(interim_base_path, "stance_magnitude_thresholds.csv")) or overwrite:
+    if (
+        not os.path.isfile(
+            os.path.join(interim_base_path, "stance_magnitude_thresholds.csv")
+        )
+        or overwrite
+    ):
         pd.DataFrame(
             columns=[
                 "subject",
@@ -104,7 +114,8 @@ if get_stance_threshold:
                 "stance_count_threshold_right",
             ],
         ).to_csv(
-            os.path.join(interim_base_path, "stance_magnitude_thresholds.csv"), index=False
+            os.path.join(interim_base_path, "stance_magnitude_thresholds.csv"),
+            index=False,
         )
 
     for subject_id, subject in enumerate(sub_list):
@@ -119,7 +130,7 @@ if get_stance_threshold:
                 "run",
                 run_id + 1,
                 "/",
-                len(runs)
+                len(runs),
             )
 
             # run interactive gyro stance phase detection
