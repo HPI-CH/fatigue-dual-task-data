@@ -1,8 +1,7 @@
-# Gait-AD: The <span style="color:SteelBlue">Gait</span> dataset for Walking under F<br><span style="color:SteelBlue">a</span>tigue and <span style="color:SteelBlue">D</span>ual-task Conditions
-
+# DUO-GAIT: A Gait Dataset for Walking under Dual-Task and Fatigue Conditions with Inertial Measurement Units
 
 ## About
-This repository contains scripts used to process the dataset Gait-AD (**Gait** Dataset for F**a**tigue and **D**ual-task). The publication about this dataset will soon be online.
+This repository contains scripts used to process the dataset DUO-GAIT (**Gait** Dataset for **D**ual-task and Fatig**u**e C**o**nditions). The publication about this dataset will soon be online.
 
 The scripts achieves the following main functions:
 * Segment the IMU recordings into walking sessions and fatigue exercise
@@ -22,7 +21,7 @@ Create virtual environment with Python version 3.7 (for example using Conda) \
 Install requirements \
 ```pip install -r requirements.txt```
 
-Request data for scientific purposes [here](TBD).
+Download data for scientific purposes [here](TBD).
 
 Save data to ```./data/```
 
