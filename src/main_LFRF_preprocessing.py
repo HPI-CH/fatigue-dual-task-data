@@ -58,39 +58,37 @@ interim_base_path = os.path.join(paths["interim_data"])
 
 #### plot and load raw data ####
 if load_raw:
-    for i in range(len(sub_list)):
-        sub = sub_list[i]
-        read_folder = raw_folders[1]
-        save_entire_recording_folder = all_folders[1]
-        # save_folder = runs[0]
+    sub = sub_list[0]
+    read_folder = raw_folders[1]
+    save_entire_recording_folder = all_folders[1]
+    save_folder = runs[0]
 
-        from_interim = False
-        read_folder_path = os.path.join(raw_base_path, read_folder, sub)
-        save_entire_recording_path = os.path.join(
-            interim_base_path, save_entire_recording_folder, sub
-        )  # save entire recording to interim folder
-        # save_folder_path = os.path.join(interim_base_path, save_folder, sub)
+    from_interim = False
+    read_folder_path = os.path.join(raw_base_path, read_folder, sub)
+    save_entire_recording_path = os.path.join(
+        interim_base_path, save_entire_recording_folder, sub
+    )  # save entire recording to interim folder
+    save_folder_path = os.path.join(interim_base_path, save_folder, sub)
 
-        # select IMU locations to load
-        IMU_loc_list = ["LF", "SA"]
-        for loc in IMU_loc_list:
-            if from_interim:  # load interim data
-                df_loc = pd.read_csv(os.path.join(read_folder_path, loc + ".csv"))
-            else:  # load raw data (& save file to the interim folder)
-                data_loader = DataLoader(read_folder_path, loc)
-                df_loc = data_loader.load_GaitUp_data()
-                data_loader.save_data(
-                    save_entire_recording_path
-                )  # save re-formatted entire data into /interim folder
-                # df_loc = data_loader.cut_data(322000, 372000)  # (if necessary: segment data)
-                # data_loader.save_data(save_folder_path)  # save re-formatted data into /interim folder
+    # select IMU locations to load
+    IMU_loc_list = ["LF", "SA"]
+    for loc in IMU_loc_list:
+        if from_interim:  # load interim data
+            df_loc = pd.read_csv(os.path.join(read_folder_path, loc + ".csv"))
+        else:  # load raw data (& save file to the interim folder)
+            data_loader = DataLoader(read_folder_path, loc)
+            df_loc = data_loader.load_GaitUp_data()
+            data_loader.save_data(
+                save_entire_recording_path
+            )  # save re-formatted entire data into /interim folder
+            # df_loc = data_loader.cut_data(322000, 372000)  # (if necessary: segment data)
+            data_loader.save_data(save_folder_path)  # save re-formatted data into /interim folder
 
-        #     # df_loc = df_loc.dropna()
-        #     if df_loc is not None:  # if the IMU data is loaded, plot the signals
-        #         plot_acc_gyr(df_loc, ["AccX", "AccY", "AccZ"], "raw_Acc_" + loc, save_folder_path)
-        #         plot_acc_gyr(df_loc, ["GyrX", "GyrY", "GyrZ"], "raw_Gyr_" + loc, save_folder_path)
+        if df_loc is not None:  # if the IMU data is loaded, plot the signals
+            plot_acc_gyr(df_loc, ["AccX", "AccY", "AccZ"], "raw_Acc_" + loc, save_folder_path)
+            plot_acc_gyr(df_loc, ["GyrX", "GyrY", "GyrZ"], "raw_Gyr_" + loc, save_folder_path)
 
-        # plt.show()
+    plt.show()
 
 
 #### get gyro stance threshold ####
