@@ -106,6 +106,12 @@ imu_stats_std_df = imu_stats_df.groupby(["run", "imu_loc"], sort=False).std().ro
 imu_stats_summary_df = pd.merge(imu_stats_mean_df, imu_stats_std_df, on=["run", "imu_loc"], how="inner")
 # sort columns
 imu_stats_summary_df = imu_stats_summary_df[['run', 'imu_loc', 'duration_mean', 'duration_std', 'acc_mag_mean_mean', 'acc_mag_mean_std', 'gyro_mag_mean_mean', 'gyro_mag_mean_std']]
+
+# save to csv
+imu_stats_summary_df.to_csv(os.path.join(processed_base_path, "imu_stats_summary.csv"), index=False)
+
+# print to console
+print("IMU raw data summary:")
 print(imu_stats_summary_df.to_string(index=False))
 
 #### gait parameters summary ####
@@ -136,6 +142,9 @@ std.columns = std.columns.str.replace("avg", "std")  # replace column names to s
 # construct summary dataframe
 summary_df = pd.merge(means, std, left_index=True, right_index=True)
 summary_df.sort_index(axis=1, inplace=True)
+
+# save summary dataframe to csv
+summary_df.to_csv(os.path.join(processed_base_path, "gait_params_summary.csv"))
 
 print("Gait parameter summary:")
 print(summary_df.to_string())
@@ -185,9 +194,11 @@ summary_dt_costs_df = pd.DataFrame(
     )
 summary_dt_costs_df.sort_index(axis=1, inplace=True)
 
+# save summary dataframe to csv
+summary_dt_costs_df.to_csv(os.path.join(processed_base_path, "dt_costs_summary.csv"))
+
 print("\nDual-task cost (%) summary:")
 print(summary_dt_costs_df.to_string())
-
 
 #### study information ####
 SubjectInfo.main(statistics=True)
