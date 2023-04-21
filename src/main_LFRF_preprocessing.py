@@ -10,7 +10,7 @@ from data.DataLoader import DataLoader
 
 #### PARAMS START ####
 load_raw = True   # load (and plot) raw IMU data into interim data
-get_stance_threshold = True   # determine stance threshold
+get_stance_threshold = False   # determine stance threshold
 
 sub_list = [
     "sub_01",
@@ -36,6 +36,11 @@ raw_folders = [
     "OG_dt_raw"
 ]
 
+all_folders = [
+    "OG_st_all",
+    "OG_dt_all"
+]
+
 runs = [
     "OG_st_control",
     "OG_st_fatigue",
@@ -54,20 +59,23 @@ interim_base_path = os.path.join(paths["interim_data"])
 if load_raw:
     sub = sub_list[0]
     read_folder = raw_folders[0]
+    save_entire_recording_folder = all_folders[0]
     save_folder = runs[0]
 
     from_interim = False
     read_folder_path = os.path.join(raw_base_path, read_folder, sub)
+    save_entire_recording_path = os.path.join(interim_base_path, save_entire_recording_folder, sub) # save entire recording to interim folder
     save_folder_path = os.path.join(interim_base_path, save_folder, sub)
 
     # select IMU locations to load
-    IMU_loc_list = ["LF", "RF"]
+    IMU_loc_list = ["LF", "SA"]
     for loc in IMU_loc_list:
         if from_interim:  # load interim data
             df_loc = pd.read_csv(os.path.join(read_folder_path, loc + ".csv"))
         else:  # load raw data (& save file to the interim folder)
             data_loader = DataLoader(read_folder_path, loc)
             df_loc = data_loader.load_GaitUp_data()
+            data_loader.save_data(save_entire_recording_path, save_suffix="_all")  # save re-formatted entire data into /interim folder
             # df_loc = data_loader.cut_data(322000, 372000)  # (if necessary: segment data)
             data_loader.save_data(save_folder_path)  # save re-formatted data into /interim folder
 
