@@ -7,9 +7,12 @@ import json
 import pandas as pd
 import numpy as np
 from data.SubjectInfo import *
+from data.imu import IMU
 
 with open("path.json") as f:
     paths = json.load(f)
+raw_base_path = paths["raw_data"]
+interim_base_path = paths["interim_data"]
 processed_base_path = paths["processed_data"]
 
 runs = [
@@ -42,6 +45,68 @@ parameter_list = [
     "stride_lengths_avg",
     "speed_avg"
 ]
+
+#### IMU raw data summary ####
+def append_imu_to_df(df, sub, run, imu_loc, imu):
+    """append imu statistical data to dataframe at the last row
+
+    Args:
+        df (DataFrame): the dataframe to be appended
+        imu (IMU object): the imu whose information is to be appended 
+    """
+    # get duration of recording
+    duration = imu.time()[-1] # time is zero-based already when reading the data
+    # get acceleration magnitude
+    acc_mag = imu.accel_mag()
+    # get gyro magnitude
+    gyro_mag = imu.gyro_mag()
+
+    # append data to dataframe
+    df.loc[len(df)] = [
+        sub, 
+        run, 
+        imu_loc, 
+        duration, 
+        acc_mag.mean(), 
+        gyro_mag.mean(), 
+        ]
+
+# load imu data from the 4 walks and the fatigue exercise
+cols = ["sub", "run", "imu_loc", "duration", "acc_mag_mean", "gyro_mag_mean"]
+walk_imu_df = pd.DataFrame(columns=cols)
+exercise_imu_df = pd.DataFrame(columns=cols)
+entire_session_imu_df = pd.DataFrame(columns=cols)
+
+for sub in sub_list:
+    for location in ["LF", "SA"]:
+
+        # load walking data
+        for run in runs:
+            imu_walk = IMU(os.path.join(interim_base_path, run, sub, f"{location}.csv"))
+            append_imu_to_df(walk_imu_df, sub, run, location, imu_walk)
+
+        for cond in ["st", 'dt']:
+            # load exercise data
+            imu_exercise = IMU(os.path.join(interim_base_path, f"OG_{cond}_sit_to_stand", sub, f"{location}.csv"))
+            append_imu_to_df(exercise_imu_df, sub, f"{cond}_exercise", location, imu_exercise)
+
+            # load entire recording session data
+            imu_all = IMU(os.path.join(interim_base_path, f"OG_{cond}_all", sub, f"{location}.csv"))
+            append_imu_to_df(entire_session_imu_df, sub, cond, location, imu_all)
+
+# concat all dataframes and save to csv
+imu_stats_df = pd.concat([walk_imu_df, exercise_imu_df, entire_session_imu_df])
+imu_stats_df.to_csv(os.path.join(processed_base_path, "imu_stats.csv"), index=False)
+
+# aggregate imu data across participants
+imu_stats_mean_df = imu_stats_df.groupby(["run", "imu_loc"], sort=False).mean().round(2).add_suffix('_mean').reset_index()
+imu_stats_std_df = imu_stats_df.groupby(["run", "imu_loc"], sort=False).std().round(2).add_suffix('_std').reset_index()
+
+# merge mean and std dataframes
+imu_stats_summary_df = pd.merge(imu_stats_mean_df, imu_stats_std_df, on=["run", "imu_loc"], how="inner")
+# sort columns
+imu_stats_summary_df = imu_stats_summary_df[['run', 'imu_loc', 'duration_mean', 'duration_std', 'acc_mag_mean_mean', 'acc_mag_mean_std', 'gyro_mag_mean_mean', 'gyro_mag_mean_std']]
+print(imu_stats_summary_df.to_string(index=False))
 
 #### gait parameters summary ####
 df_list = []
