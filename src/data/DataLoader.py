@@ -59,7 +59,7 @@ class DataLoader:
             os.makedirs(save_path)
 
         try:
-            self.data_df.to_csv(save_path + '/' + self.location_kw + '.csv')
+            self.data_df.to_csv(os.path.join(save_path, f"{self.location_kw}.csv"))
         except AttributeError:
             print("Could not save to csv: Data not loaded yet.")
         else:
