@@ -51,9 +51,14 @@ The calculated gait parameters can be found at data/processed/.../sub_XY/ and co
 - aggregate_params.csv: containing aggregated gait parameters of both feet and additionally symmetry features
 
 ### **Summarize gait parameters and other study-related information**
-1. Configure the data to be summarized :
+1. Configure the data to be summarized:
    - gait parameters: parameter_list in file ```./src/main_data_summary.py```
 2. Run ```python ./src/main_data_summary.py```
+
+### **Perform two-way repeated measures ANOVA for example gait parameters**
+1. Navigate to directory containing the R project:
+    ```cd src_R```
+2. Run ```Rscript anova.R```
 
 --------
 ## Authors
