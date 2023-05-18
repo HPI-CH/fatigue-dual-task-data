@@ -9,7 +9,7 @@ import numpy as np
 from data.SubjectInfo import *
 from data.imu import IMU
 
-class DataSummary():
+class DataSummary:
     def __init__(self, sub_list, run_list, parameter_list):
         self.sub_list = sub_list
         self.run_list = run_list
@@ -47,7 +47,7 @@ class DataSummary():
             acc_mag.mean(),
             gyro_mag.mean(),
         ]
-    
+
     def imu_raw_data_summary(self):
         # load imu data from the 4 walks and the fatigue exercise
         cols = ["sub", "imu_loc", "run", "duration", "acc_mag_mean", "gyro_mag_mean"]
@@ -60,14 +60,21 @@ class DataSummary():
 
                 # load walking data
                 for run in self.run_list:
-                    imu_walk = IMU(os.path.join(self.interim_base_path, run, sub, f"{location}.csv"))
+                    imu_walk = IMU(
+                        os.path.join(
+                            self.interim_base_path, run, sub, f"{location}.csv"
+                        )
+                    )
                     self.append_imu_to_df(walk_imu_df, sub, run, location, imu_walk)
 
                 for cond in ["st", "dt"]:
                     # load exercise data
                     imu_exercise = IMU(
                         os.path.join(
-                            self.interim_base_path, f"OG_{cond}_sit_to_stand", sub, f"{location}.csv"
+                            self.interim_base_path,
+                            f"OG_{cond}_sit_to_stand",
+                            sub,
+                            f"{location}.csv",
                         )
                     )
                     self.append_imu_to_df(
@@ -77,14 +84,21 @@ class DataSummary():
                     # load entire recording session data
                     imu_all = IMU(
                         os.path.join(
-                            self.interim_base_path, f"OG_{cond}_all", sub, f"{location}.csv"
+                            self.interim_base_path,
+                            f"OG_{cond}_all",
+                            sub,
+                            f"{location}.csv",
                         )
                     )
-                    self.append_imu_to_df(entire_session_imu_df, sub, cond, location, imu_all)
+                    self.append_imu_to_df(
+                        entire_session_imu_df, sub, cond, location, imu_all
+                    )
 
         # concat all dataframes and save to csv
         imu_stats_df = pd.concat([walk_imu_df, exercise_imu_df, entire_session_imu_df])
-        imu_stats_df.to_csv(os.path.join(self.processed_base_path, "imu_stats.csv"), index=False)
+        imu_stats_df.to_csv(
+            os.path.join(self.processed_base_path, "imu_stats.csv"), index=False
+        )
 
         # aggregate imu data across participants
         imu_stats_mean_df = (
@@ -109,8 +123,8 @@ class DataSummary():
         # sort columns
         imu_stats_summary_df = imu_stats_summary_df[
             [
-                "run",
                 "imu_loc",
+                "run",
                 "duration_mean",
                 "duration_std",
                 "acc_mag_mean_mean",
@@ -119,6 +133,11 @@ class DataSummary():
                 "gyro_mag_mean_std",
             ]
         ]
+
+        # sort rows by imu_loc column
+        imu_stats_summary_df = imu_stats_summary_df.sort_values(
+            by=["imu_loc"], ascending=[True]
+        )
 
         # save to csv
         imu_stats_summary_df.to_csv(
@@ -145,24 +164,36 @@ class DataSummary():
                     stride_count += valid_df.shape[0]  # count number of valid strides
                 agg_df = pd.read_csv(os.path.join(folder_path, "aggregate_params.csv"))
                 agg_df["run"] = run
+                agg_df["sub"] = sub
                 agg_df["stride_count_avg"] = stride_count
                 df_list.append(agg_df)
 
-        all_agg_df = pd.concat(df_list)[self.parameter_list + ["run", "stride_count_avg"]]
-        means = all_agg_df.groupby("run", sort=False).mean().round(2)
-        std = all_agg_df.groupby("run", sort=False).std().round(2)
-        std.columns = std.columns.str.replace("avg", "std")  # replace column names to std
+        self.all_agg_df = pd.concat(df_list)[
+            self.parameter_list + ["run", "sub", "stride_count_avg"]
+        ]
+        # save to csv
+        self.all_agg_df.to_csv(
+            os.path.join(self.processed_base_path, "gait_params_per_person.csv"), index=False
+        )
+
+        # calculate mean and std for each parameter
+        means = self.all_agg_df.groupby("run", sort=False).mean().round(2)
+        std = self.all_agg_df.groupby("run", sort=False).std().round(2)
+        std.columns = std.columns.str.replace(
+            "avg", "std"
+        )  # replace column names to std
 
         # construct summary dataframe
         summary_df = pd.merge(means, std, left_index=True, right_index=True)
         summary_df.sort_index(axis=1, inplace=True)
 
         # save summary dataframe to csv
-        summary_df.to_csv(os.path.join(self.processed_base_path, "gait_params_summary.csv"))
+        summary_df.to_csv(
+            os.path.join(self.processed_base_path, "gait_params_summary.csv")
+        )
 
         print("Gait parameter summary:")
         print(summary_df.to_string())
-
 
     #### dual-task costs ####
     # calculate dt costs for control and fatigue separately
@@ -173,11 +204,17 @@ class DataSummary():
             arr_dt_list = []
             for sub in self.sub_list:
                 st_path = os.path.join(
-                    self.processed_base_path, "OG_st_" + condition, sub, "aggregate_params.csv"
+                    self.processed_base_path,
+                    "OG_st_" + condition,
+                    sub,
+                    "aggregate_params.csv",
                 )
 
                 dt_path = os.path.join(
-                    self.processed_base_path, "OG_dt_" + condition, sub, "aggregate_params.csv"
+                    self.processed_base_path,
+                    "OG_dt_" + condition,
+                    sub,
+                    "aggregate_params.csv",
                 )
 
                 # read gait parameters and flatten into arrays
@@ -204,10 +241,13 @@ class DataSummary():
         summary_dt_costs_df.sort_index(axis=1, inplace=True)
 
         # save summary dataframe to csv
-        summary_dt_costs_df.to_csv(os.path.join(self.processed_base_path, "dt_costs_summary.csv"))
+        summary_dt_costs_df.to_csv(
+            os.path.join(self.processed_base_path, "dt_costs_summary.csv")
+        )
 
         print("\nDual-task cost (%) summary:")
         print(summary_dt_costs_df.to_string())
+
 
 #### main ####
 if __name__ == "__main__":
@@ -237,7 +277,7 @@ if __name__ == "__main__":
 
     data_summary = DataSummary(sub_list, run_list, parameter_list)
     data_summary.imu_raw_data_summary()  # summarize raw IMU data
-    data_summary.gait_params_summary()      # summarize gait parameters
+    data_summary.gait_params_summary()  # summarize gait parameters
     data_summary.dt_costs()            # summarize dual-task costs
 
     SubjectInfo.main(statistics=True)   # summarize study-related information
