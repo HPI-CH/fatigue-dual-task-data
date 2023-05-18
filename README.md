@@ -58,7 +58,8 @@ The calculated gait parameters can be found at data/processed/.../sub_XY/ and co
 ### **Perform two-way repeated measures ANOVA for example gait parameters**
 1. Navigate to directory containing the R project:
     ```cd src_R```
-2. Run ```Rscript anova.R```
+2. Install the required packages using renv
+3. Run ```Rscript anova.R```
 
 --------
 ## Authors
