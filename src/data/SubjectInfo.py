@@ -383,7 +383,10 @@ class SubjectInfo:
             # sub_info.boxplot_info(grou_by, 'Borg Scale 1st vs. 2nd Visit', save_fig_path)
 
         if statistics:
-            dat_type = "lac"  # lac (lactate), HR (heart rate), time (time to fatigue), borg, days_recovery
+            dat_type = "dt_lac"  
+            # lac (lactate), HR (heart rate), time (time to fatigue), borg, days_recovery
+            # st_lac: lactate under single task before and after fatigue
+            # dt_lac: lactate under dual task before and after fatigue
             grou_by = "condition"  # visit, condition
             # plot_df = sub_info.get_plot_df(dat_type, grou_by)
             stats_df = sub_info.get_stats_df(dat_type, grou_by)

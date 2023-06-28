@@ -61,6 +61,12 @@ def test_mean(df, data_type, group_by, norm_dist=True, var="value"):
             for col in df.columns
             if np.logical_and(data_type in col, "fatigue" in col)
         ]
+    elif data_type in ["st_lac", "dt_lac"]:
+        cols = [
+            col
+            for col in df.columns
+            if data_type in col
+        ]
     else:
         cols = [col for col in df.columns if data_type in col]
 
@@ -71,6 +77,7 @@ def test_mean(df, data_type, group_by, norm_dist=True, var="value"):
             t, p_value_t = stats.ttest_rel(df[cols[0]], df[cols[1]])
             print("two-sided p value = " + str(p_value_t))
             print("one-sided p value = " + str(p_value_t / 2))
+            print(f"H0: there is no significant difference between {cols[0]} and {cols[1]}")
             if t > 0:
                 print("H1: " + cols[0] + " is greater than " + cols[1])
             elif t < 0:
