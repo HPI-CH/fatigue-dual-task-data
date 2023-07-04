@@ -340,7 +340,7 @@ class SubjectInfo:
             )
 
         plt.savefig(
-            os.path.join(save_fig_path, str(title + ".png")), bbox_inches="tight"
+            os.path.join(save_fig_path, str(title + ".pdf")), bbox_inches="tight"
         )
         # plt.show()
 
@@ -365,7 +365,7 @@ class SubjectInfo:
 
             # make boxplots
             dat_type = (
-                "borg"  # lac (lactate), HR (heart rate), time (time to fatigue), borg
+                "lac"  # lac (lactate), HR (heart rate), time (time to fatigue), borg
             )
             grou_by = "condition"  # visit, condition
             sub_info.get_plot_df(dat_type, grou_by)

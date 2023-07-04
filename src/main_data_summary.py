@@ -280,4 +280,4 @@ if __name__ == "__main__":
     data_summary.gait_params_summary()  # summarize gait parameters
     data_summary.dt_costs()            # summarize dual-task costs
 
-    SubjectInfo.main(statistics=True)   # summarize study-related information
+    SubjectInfo.main(boxplot=True, statistics=True)   # summarize study-related information
